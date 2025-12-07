@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Ивент: {{ event.title }}</h2>
+
+<section class="event-info">
+    <p><strong>Тип:</strong> {{ event.event_type }}</p>
+    <p><strong>Старт:</strong> {{ event.starts_at }}</p>
+    <p><strong>Окончание:</strong> {{ event.ends_at }}</p>
+    <p><strong>Активен:</strong> {{ "Да" if event.is_active else "Нет" }}</p>
+
+    {% if event.description %}
+        <p><strong>Описание:</strong><br>{{ event.description }}</p>
+    {% endif %}
+
+    <div class="event-actions">
+        <a class="btn tiny" href="{{ url_for('events.edit_event', event_id=event.id) }}">Редактировать</a>
+        <form method="post"
+              action="{{ url_for('events.delete_event', event_id=event.id) }}"
+              onsubmit="return confirm('Удалить ивент {{ event.title }}?');">
+            <button type="submit" class="btn tiny danger">Удалить</button>
+        </form>
+    </div>
+</section>
+
+<section class="event-rewards">
+    <h3>Награды</h3>
+
+    {% if rewards %}
+        <table class="events-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Тип</th>
+                <th>Количество</th>
+                <th>Описание</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for r in rewards %}
+                <tr>
+                    <td>{{ r.id }}</td>
+                    <td>{{ r.reward_type }}</td>
+                    <td>{{ r.amount if r.amount is not none else "—" }}</td>
+                    <td>{{ r.description }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Наград для этого ивента пока нет.</p>
+    {% endif %}
+
+    <h4>Добавить награду</h4>
+    <form method="post"
+          action="{{ url_for('events.add_reward', event_id=event.id) }}"
+          class="event-form">
+        <div class="form-row">
+            <label for="reward_type">Тип награды*</label>
+            <input type="text" id="reward_type" name="reward_type" required placeholder="Валюта, опыт, предмет...">
+        </div>
+        <div class="form-row">
+            <label for="amount">Количество</label>
+            <input type="number" id="amount" name="amount" min="0">
+        </div>
+        <div class="form-row">
+            <label for="reward_description">Описание</label>
+            <textarea id="reward_description" name="description" rows="3"
+                      placeholder="Дополнительные детали награды"></textarea>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn primary">Добавить награду</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

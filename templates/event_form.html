@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>
+    {% if is_edit %}Редактирование ивента{% else %}Создание ивента{% endif %}
+</h2>
+
+<form method="post" class="event-form">
+    <div class="form-row">
+        <label for="title">Название*</label>
+        <input type="text" id="title" name="title"
+               value="{{ form.title if form else '' }}" required>
+    </div>
+
+    <div class="form-row">
+        <label for="event_type">Тип ивента*</label>
+        <input type="text" id="event_type" name="event_type"
+               value="{{ form.event_type if form else '' }}"
+               placeholder="Сезонный, PvP, ежедневный..." required>
+    </div>
+
+    <div class="form-row">
+        <label for="starts_at">Дата и время начала*</label>
+        <input type="datetime-local" id="starts_at" name="starts_at"
+               value="{{ form.starts_at if form else '' }}" required>
+    </div>
+
+    <div class="form-row">
+        <label for="ends_at">Дата и время окончания*</label>
+        <input type="datetime-local" id="ends_at" name="ends_at"
+               value="{{ form.ends_at if form else '' }}" required>
+    </div>
+
+    <div class="form-row">
+        <label for="description">Описание</label>
+        <textarea id="description" name="description" rows="4"
+                  placeholder="Кратко опишите суть ивента">{{ form.description if form else '' }}</textarea>
+    </div>
+
+    <div class="form-row checkbox-row">
+        <label>
+            <input type="checkbox" name="is_active"
+                   {% if not form or form.is_active == "on" %}checked{% endif %}>
+            Ивент активен
+        </label>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn primary">
+            {% if is_edit %}Сохранить изменения{% else %}Сохранить{% endif %}
+        </button>
+        {% if is_edit %}
+            <a href="{{ url_for('events.view_event', event_id=event_id) }}" class="btn secondary">Отмена</a>
+        {% else %}
+            <a href="{{ url_for('events.index') }}" class="btn secondary">Отмена</a>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}
