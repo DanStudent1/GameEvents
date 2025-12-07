@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Список ивентов</h2>
+
+<div class="actions-bar">
+    <a class="btn primary" href="{{ url_for('events.create_event') }}">Создать новый ивент</a>
+</div>
+
+{% if events %}
+<table class="events-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Тип</th>
+        <th>Начало</th>
+        <th>Окончание</th>
+        <th>Активен</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for e in events %}
+        <tr>
+            <td>{{ e.id }}</td>
+            <td>
+                <a href="{{ url_for('events.view_event', event_id=e.id) }}">{{ e.title }}</a>
+            </td>
+            <td>{{ e.event_type }}</td>
+            <td>{{ e.starts_at }}</td>
+            <td>{{ e.ends_at }}</td>
+            <td>{{ "Да" if e.is_active else "Нет" }}</td>
+            <td class="table-actions">
+                <a class="btn tiny" href="{{ url_for('events.edit_event', event_id=e.id) }}">Изменить</a>
+                <form method="post"
+                      action="{{ url_for('events.delete_event', event_id=e.id) }}"
+                      onsubmit="return confirm('Удалить ивент {{ e.title }}?');">
+                    <button type="submit" class="btn tiny danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Ивентов пока нет. Создайте первый.</p>
+{% endif %}
+{% endblock %}
