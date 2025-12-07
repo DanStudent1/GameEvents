@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: game_events_db
+    restart: always
+    environment:
+      POSTGRES_DB: gameevents
+      POSTGRES_USER: gameuser
+      POSTGRES_PASSWORD: gamepass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: game_events_web
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://gameuser:gamepass@db:5432/gameevents
+    ports:
+      - "8000:8000" 
+
+volumes:
+  pgdata:
